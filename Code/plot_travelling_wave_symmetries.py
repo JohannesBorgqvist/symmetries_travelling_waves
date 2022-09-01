@@ -67,35 +67,24 @@ z = linspace(0,20,500)
 # Allee model
 lambda_allee = sqrt(kappa/2)
 tv_allee = array([((C*exp(lambda_allee*z_temp))/(1+C*exp(lambda_allee*z_temp))) for z_temp in z])
-# Generalised growth model
-lambda_gen_growth = 1/sqrt(2)
-tv_gen_growth = array([((A*cos(lambda_gen_growth*z_temp)+B*sin(lambda_gen_growth*z_temp))/(1+A*cos(lambda_gen_growth*z_temp)+B*sin(lambda_gen_growth*z_temp))) for z_temp in z])
 # Plot these solutions
-f1, ax_1 = plt.subplots(1, 2, constrained_layout=True, figsize=(20, 8))
-ax_1[0].plot(z, tv_allee, '-', label="Allee model" ,color=(0/256,68/256,27/256),linewidth=3.0)
-ax_1[0].grid()
-ax_1[0].legend(loc='best',prop={"size":20})
-ax_1[1].plot(z, tv_allee, '-', label="Allee model" ,color=(0/256,68/256,27/256),linewidth=3.0)
-ax_1[1].plot(z, tv_gen_growth, '-', label="Generalised growth model" ,color=(102/256,37/256,6/256),linewidth=3.0)
-ax_1[1].grid()
-ax_1[1].legend(loc='best',prop={"size":20})
+f1, ax_1 = plt.subplots(1, 1, constrained_layout=True, figsize=(20, 8))
+ax_1.plot(z, tv_allee, '-', label="Allee model" ,color=(0/256,68/256,27/256),linewidth=3.0)
+ax_1.grid()
+ax_1.legend(loc='best',prop={"size":20})
 # Set fontsize of labels
-ax_1[0].set_xlabel(xlabel='Wave front, $z=x-ct$',fontsize=25)
-ax_1[0].set_ylabel(ylabel='Travelling wave, $u(z)$',fontsize=25)
-ax_1[1].set_xlabel(xlabel='Wave front, $z=x-ct$',fontsize=25)
-ax_1[1].set_ylabel(ylabel='Travelling wave, $u(z)$',fontsize=25)
+ax_1.set_xlabel(xlabel='Wave front, $z=x-ct$',fontsize=25)
+ax_1.set_ylabel(ylabel='Travelling wave, $u(z)$',fontsize=25)
 # Change the size of the ticks
-ax_1[0].tick_params(axis='both', which='major', labelsize=20)
-ax_1[0].tick_params(axis='both', which='minor', labelsize=20)
-ax_1[1].tick_params(axis='both', which='major', labelsize=20)
-ax_1[1].tick_params(axis='both', which='minor', labelsize=20)
+ax_1.tick_params(axis='both', which='major', labelsize=20)
+ax_1.tick_params(axis='both', which='minor', labelsize=20)
 # Title and saving the figure
 f1.suptitle('Travelling wave solution of RD-models of cell growth',fontsize=30,weight='bold')
-f1.savefig('../Figures/travelling_wave_solutions.png')
+f1.savefig('../Figures/travelling_wave_solution_Allee.png')
 # Show the plot at last
 plt.show()
 
 
 # STABLE POINT RADIAL SYMMETRY
 plot_LaTeX_2D(z, tv_allee,"../Figures/travelling_waves/Input/tv_1.tex","color=clr_1,line width=1.5pt,","Allee model")
-plot_LaTeX_2D(z, tv_gen_growth,"../Figures/travelling_waves/Input/tv_2.tex","color=clr_2,line width=1.5pt,","Gen. growth,\\\\ $(\\alpha,\\beta,\\gamma)=(1,1,2)$")
+
