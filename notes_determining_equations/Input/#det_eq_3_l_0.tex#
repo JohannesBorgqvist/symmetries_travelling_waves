@@ -1,0 +1,11 @@
+\begin{align*}
+u^{3}&:6 A(z) c_{0} - 2 B''(z) + 2 B'(z) c + 4 D'(z)&=0,\\
+u^{4}&:- 8 A(z) c + 6 A(z) c_{1} + 6 A''(z) + 2 A'(z) c&=0,\\
+u^{5}&:6 A(z) c_{2}&=0,\\
+u^{6}&:6 A(z) c_{3}&=0.\\
+\end{align*}
+From these determining equations, we see that
+$$A(z)=0\forall z\in\mathbb{R}$$
+and that
+$$D(z)=\dfrac{1}{2}\left(B'(z)+B(z)\right)+C.$$
+

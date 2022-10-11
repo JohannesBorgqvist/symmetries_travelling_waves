@@ -1,0 +1,9 @@
+By calculating the prolonged infinitesimals $\eta^{(1)}$ and $\eta^{(2)}$, plugging these into this linearised symmetry condition, and then organising the resulting equation in terms of powers of $u'$ results in the following four so called \textit{determining equations}
+
+\begin{align}
+(u')^3:&\quad\xi_{uu}+\dfrac{\ell}{u}\xi_u&=0,\label{eq:det_eq_1}\\
+(u')^2:&\quad2c\xi_u u^{\ell}+\eta_{uu}-2\xi_{zu}-\dfrac{(\eta_u-2\xi_z)\ell}{u}+\dfrac{\ell\eta}{u^2}&=0,\label{eq:det_eq_2}\\
+u':&\quad cu^{\ell}\xi_z+3u^{\ell}\xi_u f(u)+2\eta_{zu}-\xi_{zz}-\dfrac{2\ell}{u}\eta_z+c\ell u^{\ell-1}\eta&=0,\label{det_eq_3}\\
+1:&\quad u^{\ell-1}\left(\ell f(u)+u\dfrac{\mathrm{d}f}{\mathrm{d}u}\right)\eta+cu^{\ell}\eta_z+\eta_{zz}+u^{\ell}f(u)(2\xi_z-\eta_u)&\quad=0.\label{det_eq_4}
+\end{align}
+Now, we will treat these four equations systematically, and solve them one by one. We will use our friend *SymPy* to do this.
