@@ -27,3 +27,5 @@
 # Also, we make a folder with a temporary presentation which we do not want to push
 /Presentations/
 /Figures/travelling_waves/
+# Also, we do not include vtu files as they are large
+*.vtu
