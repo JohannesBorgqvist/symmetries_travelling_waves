@@ -6,3 +6,6 @@ We illustrate the symmetries of travelling wave solutions to RD-models of cell g
 
 
 ![Travelling wave symmetries of models of collective cell migration](./Figures/travelling_wave_symmetries.png)
+
+![FEM mesh of the unit square](./Figures/mesh_unit_square.png)
+
