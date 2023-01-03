@@ -311,7 +311,7 @@ ax_sym_tv[2].legend(loc='best',prop={"size":15})
 ax_sym_tv[2].set_xlabel(xlabel="Travelling wave variable, $z=x-ct$",fontsize=15)
 ax_sym_tv[2].set_ylabel(ylabel="Population density, $u(z)$",fontsize=15)
 ax_sym_tv[2].set_title(label="Generalised logistic model",fontsize=20)
-#---------------------------------------------------------------------------------
+x#---------------------------------------------------------------------------------
 # Show the figure
 plt.show()
 # Title and saving the figure
