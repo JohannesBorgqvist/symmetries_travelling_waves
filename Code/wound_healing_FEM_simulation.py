@@ -18,18 +18,16 @@ import matplotlib.pyplot as plt
 # Make the plotting fancy with LaTeX
 plt.rcParams['text.usetex'] = True
 
-
-
-
-
-mesh = UnitSquareMesh(10, 10, "left")
-print("Plotting a UnitIntervalMesh")
-
-
-
 #=================================================================================
 #=================================================================================
-# Plot all of our symmetries
+# Create a mesh of the unit square
+#=================================================================================
+#=================================================================================
+num_nodes = 100
+mesh = UnitSquareMesh(num_nodes, num_nodes, "left")
+#=================================================================================
+#=================================================================================
+# Plot the FEM mesh
 #=================================================================================
 #=================================================================================
 #Define the first figure
@@ -53,4 +51,6 @@ plt.title("Mesh of the unit square",fontsize=40,weight='bold')
 plt.savefig('../Figures/mesh_unit_square.png',dpi = 100)
 # Show the figure
 plt.show()
+
+
 
