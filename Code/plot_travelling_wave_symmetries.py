@@ -268,11 +268,11 @@ for index in range(len(magical_indices)):
 ax_sym_tv[0].plot(z_hat,u_hat_exp,color=(153/256,216/256,201/256),label="$\\hat{u}(z)$",linewidth=1.0)
 # Set a grid and define a legend
 ax_sym_tv[0].grid()
-ax_sym_tv[0].legend(loc='best',prop={"size":3})
+ax_sym_tv[0].legend(loc='best',prop={"size":15})
 # Set the x-labels and y-labels
-ax_sym_tv[0].set_xlabel(xlabel="Travelling wave variable, $z=x-ct$",fontsize=5)
-ax_sym_tv[0].set_ylabel(ylabel="Population density, $u(z)$",fontsize=5)
-ax_sym_tv[0].set_title(label="Exponential model",fontsize=10)
+ax_sym_tv[0].set_xlabel(xlabel="Travelling wave variable, $z=x-ct$",fontsize=15)
+ax_sym_tv[0].set_ylabel(ylabel="Population density, $u(z)$",fontsize=15)
+ax_sym_tv[0].set_title(label="Exponential model",fontsize=20)
 #---------------------------------------------------------------------------------
 # Subplot 2 of 3: The logistic model
 # The original solution
@@ -287,11 +287,11 @@ for index in range(len(magical_indices)):
 ax_sym_tv[1].plot(z_hat_log,u_hat_log,color=(153/256,216/256,201/256),label="$\\hat{u}(z)$",linewidth=1.0)
 # Set a grid and define a legend
 ax_sym_tv[1].grid()
-ax_sym_tv[1].legend(loc='best',prop={"size":3})
+ax_sym_tv[1].legend(loc='best',prop={"size":15})
 # Set the x-labels and y-labels
-ax_sym_tv[1].set_xlabel(xlabel="Travelling wave variable, $z=x-ct$",fontsize=5)
-ax_sym_tv[1].set_ylabel(ylabel="Population density, $u(z)$",fontsize=5)
-ax_sym_tv[1].set_title(label="Logistic model",fontsize=10)
+ax_sym_tv[1].set_xlabel(xlabel="Travelling wave variable, $z=x-ct$",fontsize=15)
+ax_sym_tv[1].set_ylabel(ylabel="Population density, $u(z)$",fontsize=15)
+ax_sym_tv[1].set_title(label="Logistic model",fontsize=20)
 #---------------------------------------------------------------------------------
 # Subplot 3 of 3: The generalised logistic model
 # The original solution
@@ -306,14 +306,18 @@ for index in range(len(magical_indices)):
 ax_sym_tv[2].plot(z_hat_gen,u_hat_gen,color=(153/256,216/256,201/256),label="$\\hat{u}(z)$",linewidth=1.0)
 # Set a grid and define a legend
 ax_sym_tv[2].grid()
-ax_sym_tv[2].legend(loc='best',prop={"size":3})
+ax_sym_tv[2].legend(loc='best',prop={"size":15})
 # Set the x-labels and y-labels
-ax_sym_tv[2].set_xlabel(xlabel="Travelling wave variable, $z=x-ct$",fontsize=5)
-ax_sym_tv[2].set_ylabel(ylabel="Population density, $u(z)$",fontsize=5)
-ax_sym_tv[2].set_title(label="Generalised logistic model",fontsize=10)
+ax_sym_tv[2].set_xlabel(xlabel="Travelling wave variable, $z=x-ct$",fontsize=15)
+ax_sym_tv[2].set_ylabel(ylabel="Population density, $u(z)$",fontsize=15)
+ax_sym_tv[2].set_title(label="Generalised logistic model",fontsize=20)
 #---------------------------------------------------------------------------------
 # Show the figure
 plt.show()
+# Title and saving the figure
+f_sym_tv.suptitle('Travelling wave symmetries of models of collective cell migration',fontsize=30,weight='bold');
+f_sym_tv.savefig('../Figures/travelling_wave_symmetries.png')
+
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 # PLOTTING THESE TRAVELLING WAVE MODELS IN LATEX
