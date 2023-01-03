@@ -33,14 +33,24 @@ print("Plotting a UnitIntervalMesh")
 #=================================================================================
 #=================================================================================
 #Define the first figure
-f_FEM_mesh, ax_FEM_mesh = plt.subplots(1, 2, constrained_layout=True, figsize=(20, 8))
-ax_FEM_mesh[0].plot(mesh)
+fig_FEM_mesh = plt.gcf() # get current figure
+fig_FEM_mesh.set_size_inches(20, 8)
+#---------------------------------------------------------------------------------
+# Subplot 1 of 2: The FEM mesh
+# The original solution
+plot(mesh)
 # Set a grid and define a legend
-ax_sym_tv[0].grid()
-ax_sym_tv[0].legend(loc='best',prop={"size":3})
+plt.grid()
+# changing the fontsize of yticks
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
 # Set the x-labels and y-labels
-ax_sym_tv[0].set_xlabel(xlabel="$x$",fontsize=5)
-ax_sym_tv[0].set_ylabel(ylabel="$y$",fontsize=5)
-ax_sym_tv[0].set_title(label="Mesh of the unit square",fontsize=10)
+plt.xlabel("$x$",fontsize=30)
+plt.ylabel("$y$",fontsize=30)
+plt.title("Mesh of the unit square",fontsize=40,weight='bold')
+#---------------------------------------------------------------------------------
+# Save the figure
+plt.savefig('../Figures/mesh_unit_square.png',dpi = 100)
+# Show the figure
 plt.show()
 
