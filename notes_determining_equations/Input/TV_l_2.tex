@@ -1,0 +1,48 @@
+Now, we will look at the following travelling wave ODE:
+\begin{equation}
+    u''-\dfrac{2(u')^2}{u}+cu'u^2+u^2\,f(u)=0.
+\end{equation}
+The corresponding determining equations we want to solve are the following:
+\begin{align}
+(u')^3:&\quad\xi_{uu}+\dfrac{2}{u}\xi_u&=0,\label{eq:det_eq_1_l_2}\\
+(u')^2:&\quad2c\xi_u u^{2}+\eta_{uu}-2\xi_{zu}-\dfrac{2\eta_u}{u}+\dfrac{2\eta}{u^2}&=0,\label{eq:det_eq_2_l_2}\\
+u':&\quad cu^{2}\xi_z+3u^{2}\xi_u f(u)+2\eta_{zu}-\xi_{zz}-\dfrac{4}{u}\eta_z+2c u\eta&=0,\label{eq:det_eq_3_l_2}\\
+1:&\quad \left(2u f(u)+u^2\dfrac{\mathrm{d}f}{\mathrm{d}u}\right)\eta+cu^{2}\eta_z+\eta_{zz}+u^{2}f(u)(2\xi_z-\eta_u)&\quad=0.\label{eq:det_eq_4_l_2}
+\end{align}
+Starting by solving \eqref{eq:det_eq_1_l_2}, we have that the solution is given by:
+\begin{equation}
+  \xi{(z,u)}=-\dfrac{A(z)}{u}+B(z).
+  \label{eq:xi_l_2}
+\end{equation}
+By plugging in this equation into \eqref{eq:det_eq_3_l_2}, we obtain the following PDE
+\begin{equation}
+  \eta_{uu}-2\dfrac{\eta_u}{u}+2\dfrac{\eta}{u^2}=2\dfrac{A'(z)}{u^2}-2cA(z).
+  \label{eq:eta_l_2}
+\end{equation}
+The solution to this equation is given by
+\begin{equation}
+  \eta{(z,u)}=C(z)u^2 + D(z)u-2cA(z)u^{2}\ln{(u)}+A'(z).
+  \label{eq:eta_l_2_sol}
+\end{equation}
+Ok, so now we will plug in our two tangents into \eqref{eq:det_eq_3_l_2} and see what we get. The third determining equation is:
+\begin{equation}
+  \begin{split}
+    - 4 A(z) c^{2} u^{3} \ln{\left(u \right)} + 3 A(z) c_{0} u + 3 A(z) c_{1} u^{2} + 3 A(z) c_{2} u^{3} &+\\
+    3 A(z) c_{3} u^{4} - 3 A''(z) - 5 A'(z) c u^{2} + 2 A'(z) c u - B''(z) u &+\\
+    B'(z) c u^{3} + 2 C(z) c u^{3} + 2 D(z) c u^{2} - 2 D''(z) u&=0.
+    \end{split}
+\label{eq:det_eq_3_l_2_latest_step}
+\end{equation}
+Now, the coefficient in front of the basis function $u^{3} \ln{\left(u \right)}$ is given by $- 4 A(z) c^{2}$, and thus it follows that $A(z)=0\Longrightarrow A'(z)=0\Longrightarrow A''(z)=0$. After plugging this into \eqref{eq:det_eq_3_l_2_latest_step}, we obtain
+$$- B''(z) u +B'(z) c u^{3} + 2 C(z) c u^{3} + 2 D(z) c u^{2} - 2 D''(z) u=0$$
+which can be split up with respect to the monomials $\{u,u^2,u^3\}$. This yields the following equations
+\begin{align*}
+  u:&-B''(z)-2D''(z)&=0,\\
+  u^2:&2D(z)c&=0,\\
+  u:&cB'(z)+2cC(z)&=0.
+\end{align*}
+The second equation yields that $D(z)=0\Longrightarrow D'(z)=0\Longrightarrow D''(z)=0$. Inserting this into the first equation yields that $B''(z)=0\Longrightarrow B'(z)=K_1\Longrightarrow B(z)=K_{1}z+K_{2}$. And inserting this into the last equation gives us that $C(z)=-B'(z)/2=-K_1/2$. All in all, this gives us the following tangents
+\begin{align}
+  \xi{(z,u)}&=K_{1}z+K_{2},\\
+  \eta{(z,u)}&=-\frac{K_{1}}{2}u^{2}.
+\end{align}

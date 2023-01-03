@@ -1,7 +1,7 @@
 \documentclass[a4paper,12pt]{article}
     % General document formatting
     \usepackage[margin=0.7in]{geometry}
-    \usepackage[parfill]{parskip}
+    %\usepackage[parfill]{parskip}
     \usepackage[utf8]{inputenc}
     
     % Related to math
@@ -13,7 +13,10 @@
     \author{Johannes Borgqvist}
     % Date
     \date{\today}
-   
+
+
+\newtheorem{theorem}{Theorem}[section]
+    
 \begin{document}
 \maketitle
 \tableofcontents
@@ -24,26 +27,10 @@
 \section{Four determining equations}
 \input{./Input/det_eq}
 
-\section{The first determining equation}
-\input{./Input/det_eq_1}
+\section{The pure diffusion case, $l=0$}
+\input{./Input/RD}
 
-\section{The second determining equation}
-\input{./Input/det_eq_2}
-
-\section{The third determining equation}
-\input{./Input/det_eq_3}
-
-\subsection{$l=0$}
-\input{./Input/det_eq_3_l_0}
-
-\subsection{$l=1$}
-\input{./Input/det_eq_3_l_1}
-
-\subsection{$l=2$}
-\input{./Input/det_eq_3_l_2}
-
-\section{The fourth determining equation}
-\input{./Input/det_eq_4}
-
+\section{The travelling wave equation when $l=2$}
+\input{./Input/TV_l_2}
 
 \end{document}

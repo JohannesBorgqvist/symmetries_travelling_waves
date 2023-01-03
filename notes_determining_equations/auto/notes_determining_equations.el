@@ -9,12 +9,8 @@
     "latex2e"
     "./Input/intro"
     "./Input/det_eq"
-    "./Input/det_eq_1"
-    "./Input/det_eq_2"
-    "./Input/det_eq_3"
-    "./Input/det_eq_3_l_0"
-    "./Input/det_eq_3_l_1"
-    "./Input/det_eq_3_l_2"
+    "./Input/RD"
+    "./Input/TV_l_1"
     "article"
     "art12"
     "geometry"
@@ -23,6 +19,8 @@
     "amsmath"
     "amssymb"
     "amsfonts"
-    "amsthm"))
+    "amsthm")
+   (LaTeX-add-amsthm-newtheorems
+    "theorem"))
  :latex)
 

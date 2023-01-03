@@ -1,0 +1,115 @@
+Here, well summarise the symmetry calculations for the RD travelling wave equation given by
+
+\begin{equation}
+  u''(z)+cu'(z)+f(u(z))=0
+  \label{eq:RD}
+\end{equation}
+where $f$ is chosen to a general cubic function $f(u)=c_0+c_1 u+c_2 u^2+c_3 u^3$. In this case, our determining equations become:
+
+\begin{align}
+(u')^3:&\quad\xi_{uu}&=0,\label{eq:det_eq_1_l_0}\\
+(u')^2:&\quad 2c\xi_u+\eta_{uu}-2\xi_{zu}&=0,\label{eq:det_eq_2_l_0}\\
+u':&\quad c\xi_z+3\xi_u f(u)+2\eta_{zu}-\xi_{zz}&=0,\label{eq:det_eq_3_l_0}\\
+1:&\quad \dfrac{\mathrm{d}f}{\mathrm{d}u}\eta+c\eta_z+\eta_{zz}+f(u)(2\xi_z-\eta_u)&\quad=0.\label{eq:det_eq_4_l_0}
+\end{align}
+So, let's tackle these systematically one by one. From \eqref{eq:det_eq_1_l_0}, it follows that
+\begin{equation}
+\xi(z,u)=A(z)u+B(z).
+\label{eq:xi_l_0_general}
+\end{equation}
+By plugging this into \eqref{eq:det_eq_2_l_0}, we get
+\begin{equation}
+\eta(z,u)=2(A'(z)-cA(z))u+C(z).
+\label{eq:eta_l_0_general}
+\end{equation}
+Now, plugging in \eqref{eq:xi_l_0_general} and \eqref{eq:eta_l_0_general} into \eqref{eq:det_eq_3_l_0} yields
+\begin{equation}
+c(A'(z)-B'(z))+3A(z)(c_0+c_1 u + c_2 u^2 + c_3 u^3)+4(A''(z)-cA'(z))-(A''(z)u+B''(z))=0.
+  \label{eq:det_eq_3_temp}
+\end{equation}
+Now, let's do everything we can to make sure that $A(z)\neq 0$. We see that the above equation decomposes into four sub equations since it amounts to finding the roots of a polynomial depending on the monomials $\{1,u,u^2,u^3\}$. The corresponding equations, we get are
+\begin{align*}
+  1:&-B''(z)-cB'(z)+4A''(z)-3cA'(z)+3c_{0}A(z)&=0,\\
+  u:&3c_{1}A(z)-A''(z)&=0,\\
+  u^2:&3c_{2}A(z)&=0,\\
+  u^3:&3c_{3}A(z)&=0.    
+\end{align*}
+Here, we get two clear cases. In the first case where $c_2\neq 0$ or $c_3\neq 0$ then $A(z)=0$. If you follow all calculations through under these assumptions you get that the only generator we have left is the translation generator given by $X=\partial_z$.
+
+Now, let's assume that $c_2=c_3=0$ which gives us a linear reaction term $f(u)=c_{0}+c_{1}u$. In this case, the second equation above gives us that
+$$A{(z)}=K_1\exp{(\sqrt{3c_1}z)}+K_2\exp{(-\sqrt{3c_1}z)}$$
+for two arbitrary constants $K_1$ and $K_2$. Now, inserting this solution into the first equation above, we get that the first equation becomes
+$$B''(z)+cB'(z)=\left(12\,c_1-3c\sqrt{3c_1}+3c_{0}\right)K_1\exp{(\sqrt{3c_1}z)}+\left(12\,c_1+3c\sqrt{3c_1}+3c_{0}\right)K_2\exp{(-\sqrt{3c_1}z)}.$$
+The solution to this equation is quite big, but it is given by the following equation
+\begin{equation}
+  \begin{split}
+    B(z)&=\dfrac{\left(12\,c_1-3c\sqrt{3c_1}+3c_0\right)}{\sqrt{3c_1}(c+\sqrt{3c_1})}K_{1}\exp{\left(\sqrt{3c_1}z\right)}+\dfrac{\left(12\,c_1+3c\sqrt{3c_1}+3c_0\right)}{\sqrt{3c_1}(c-\sqrt{3c_1})}K_{1}\exp{\left(-\sqrt{3c_1}z\right)}\\
+    &+K_{3}\dfrac{\exp{\left(-cz\right)}}{c}+K_4.
+   \end{split}
+  \label{eq:solution_B}
+\end{equation}
+Ok, so what we have left is to determine is the function $C(z)$ in \eqref{eq:eta_l_0_general} which we will do using the determining equation in \eqref{eq:det_eq_4_l_0}. We have that \eqref{eq:det_eq_4_l_0} can be written as follows
+
+\begin{equation}
+  \begin{split}
+    c_1\left[2(A'(z)-cA(z))u+C(z)\right]+c\left[2(A''(z)-cA'(z))u+C'(z)\right]&\\
+    +\left[2(A'''(z)-cA''(z))u+C''(z)\right]&\\
+    +\left(c_{0}+c_{1}u\right)(2A'(z)u+2B'(z)-2(A'(z)-cA(z)))&=0.
+  \end{split}
+  \label{eq:det_eq_4_RD_almost_done}
+\end{equation}
+Now, if we study this equation in terms of the monomials $\{1,u,u^{2}\}$, we see that the coefficient in front of $u^2$ is $2c_{1}A'{(z)}$. Again, we get two cases here. Either, we assume that $c_{1}=0$ which corresponds to a very boring case of $f(u)=c_0$. So instead we will now impose the condition that $c_1\neq 0$. This yields that $A'{(z)}=0$ which, in turn, yields that $A''{(z)}=A'''{(z)}=0$. In addition, since $A'{(z)}=\sqrt{3c_1}K_1\exp{(\sqrt{3c_1}z)}-\sqrt{3c_1}K_2\exp{(-\sqrt{3c_1}z)}=0$, we must have that $K_1=K_2=0$. So at this point we have that
+$$A(z)=0,\quad B(z)=K_{3}\dfrac{\exp{\left(-cz\right)}}{c}+K_4$$
+which means that
+$$\xi{(z,u)}=B(z),\quad \eta{(z,u)}=C(z).$$
+
+
+
+If we plug this into \eqref{eq:det_eq_4_RD_almost_done} we get  
+\begin{equation*}
+    c_{1}C(z)+cC'(z)+C''(z)+\left(c_{0}+c_{1}u\right)2B'(z)=0.
+  \end{equation*}
+  which we can split up in terms of the monomials $u$
+  \begin{align*}
+    1:&c_{1}C(z)+cC'(z)+C''(z)+2c_{0}B'(z)&=0,\\
+    u:&2c_{1}B'(z)&=0.        
+  \end{align*}
+  From this we get that $B'(z)=0$ which means that $K_{3}=0$ which means that $B(z)=K_4$. Moreover, if we assume that $C(z)=\exp{(\sigma z)}$ for some $\sigma$, the characteristic polynomial corresponding to the top equation is given by
+  $$c_{1}+c\sigma+\sigma^2=0$$
+  and the solutions to this equation is given by
+  $$\sigma=\dfrac{1}{2}\left(-c\pm\sqrt{c^2-4c_{1}}\right).$$
+
+  So all in all we seem to have three generators: $X_{1}=\partial_z$, $X_{2}=\exp{\left(\dfrac{1}{2}\left(-c+\sqrt{c^2-4c_{1}}\right)z\right)}\partial_u$ and $X_{3}=\exp{\left(-\dfrac{1}{2}\left(c+\sqrt{c^2-4c_{1}}\right)z\right)}\partial_u$. Let's summarise all of this in a theorem.
+
+  \begin{theorem}[\textbf{Symmetries of the RD travelling wave equation}]
+    Consider the travelling wave equation in \eqref{eq:RD} with a cubic reaction term:
+    \begin{equation}
+      f(u)=c_{0}+c_{1}u+c_{2}u^2+c_{3}u^3.
+      \label{eq:reaction_term}
+    \end{equation}
+    Then, the infinitesimal generators of the Lie group are given by:\\
+    \begin{enumerate}
+      \item \textbf{The quadratic ($c_2\neq 0$) and cubic case ($c_3\neq 0$)}:\\
+    \begin{equation}
+      X_1=\partial_z.
+      \label{eq:translation}
+    \end{equation}
+  \item \textbf{The linear case ($c_0\neq 0$, $c_1\neq 0$ and $c_2=c_3=0$)}:\\
+    In addition to the translation generator $X_1$ in \eqref{eq:translation} we have two generators given by
+    \begin{align}
+      X_2&=\exp{\left(\dfrac{1}{2}\left(-c+\sqrt{c^2-4c_{1}}\right)z\right)}\partial_u,\\
+      X_3&=\exp{\left(-\dfrac{1}{2}\left(c+\sqrt{c^2-4c_{1}}\right)z\right)}\partial_u,
+    \end{align}
+    where $c$ is the wave speed in $z=x-ct$. 
+    \end{enumerate}
+
+  \end{theorem}
+
+
+  In particular, if we look at the growth term $f(u)=u$ where $c_1=1$ which corresponds to exponential growth, the travelling wave solution to \eqref{eq:RD} is in this case given by
+  \begin{equation}
+    u(z)=K_1\exp{\left(\frac{1}{2}\left(-c+\sqrt{c^2-4}\right)z\right)}+K_2\exp{\left(-\frac{1}{2}\left(c+\sqrt{c^2-4}\right)z\right)}\,,\quad K_1,K_2\in\mathbb{R}.
+    \label{eq:tv_RD}
+  \end{equation}
+  Now, we would like to find symmetries for a second order growth term $f(u)=u(1-u)$ corresponding to logistic growth and even a third order growth term $f(u)=u(K-u)(1-u)$ corresponding to a growth term with an Allee effect. 
+  
