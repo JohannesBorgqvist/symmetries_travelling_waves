@@ -1,0 +1,89 @@
+\documentclass[tikz,crop,convert={density=200,outext=.png},border=0.4cm]{standalone}
+
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usetikzlibrary{arrows.meta}
+\usepackage{physics}
+\usepackage{xcolor}
+% The exponential model
+\definecolor{exp_1}{RGB}{0,68,27}
+\definecolor{exp_2}{RGB}{35,139,69}
+% The logistic model
+\definecolor{log_1}{RGB}{8,64,129}
+\definecolor{log_2}{RGB}{43,140,190}
+% The logistic model
+\definecolor{gen_1}{RGB}{127,0,0}
+\definecolor{gen_2}{RGB}{215,48,31}
+% General tikz settings for the axes etc.
+\pgfplotsset{compat=newest,
+    %width=6cm,
+    %height=3cm,
+    scale only axis=true,
+    max space between ticks=25pt,
+    try min ticks=5,
+    every axis/.style={
+        axis y line=left,
+        axis x line=bottom,
+        axis line style={thick,->,>=latex, shorten >=-.3cm}
+    },
+    every axis plot/.append style={thick},
+    tick style={black, thick},
+}
+\tikzset{
+    semithick/.style={line width=0.8pt},
+}
+\usepgfplotslibrary{groupplots}
+\usepgfplotslibrary{dateplot}
+% Document begins
+\begin{document}
+
+% =========================================================================================================
+% Action of the exponential symmetry
+\begin{tikzpicture}[scale=2]
+  % The axis of the plot
+\begin{axis}[
+    xlabel={Travelling wave variable, $z$},
+    ylabel={Density, $u(z)$},
+    title={Travelling wave solution},
+    x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+    y label style={at={(axis description cs:-0.1,0.55)},rotate=0,anchor=south},
+    %scaled x ticks = false,
+    xtick={-1,0,1,...,10},
+    ytick={0,0.2,...,1.0},
+    ymax = 0.8,
+    ymin=0,
+    xmin=-1,    
+    extra y ticks={0,0.8},
+    extra x ticks={0,5},% extra x tick labels={},    
+    %xmax = 6,
+    legend style={at={(axis description cs:0.45,0.6)},anchor=west,nodes={scale=1.75, transform shape}},
+    label style={font=\large},
+    title style={font=\large},    
+    tick label style={font=\Large},
+    legend cell align={left},
+    grid style=dashed,
+]
+\input{./Input/u.tex}
+\end{axis}
+\end{tikzpicture}
+%=========================================================================================================
+% The initial condition
+\begin{tikzpicture}
+\node[inner sep=0pt] (mixed) at (0,0)
+{\includegraphics[scale=0.81]{{./mesh_unit_square}}};
+\end{tikzpicture}
+% =========================================================================================================
+% =========================================================================================================
+% The initial condition
+\begin{tikzpicture}
+\node[inner sep=0pt] (mixed) at (0,0)
+{\includegraphics[scale=0.81]{{./initial_condition}}};
+\node[inner sep=0pt] (mixed) at (9.12,-0.1)
+{\includegraphics[scale=0.66]{{./colourbar}}};
+\node (a) at (10.25,7.5) {\Huge $1$};
+\node[rotate=270] (a) at (10.45,0) {\Huge $u(x,y,t=0)$};
+\node (a) at (10.25,-7.5) {\Huge $0$};
+\end{tikzpicture}
+% =========================================================================================================
+% 
+\end{document}

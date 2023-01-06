@@ -18,6 +18,7 @@ from fenics import *
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import integrate # For solving ODEs.
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 # Make the plotting fancy with LaTeX
 plt.rcParams['text.usetex'] = True
 #=================================================================================
@@ -36,13 +37,67 @@ def dX_dt_ICs(X, t=0,*parameters):
     # Return the dynamics of the exponential model
     return np.array([ X[1],
                    -(diffusion+taxis+cell_growth)])
+# Function 2: cell_migration_IC
+# This function maps a travelling wave solution onto the unit square in
+# order to create an initial condition (IC) for the continumm PDE
+def cell_migration_IC(c_x,c_y,z_vec,u_z,H,u_prev):
+    # Create a dofmap
+    dofmap = H.dofmap()
+    # We want to save all of the dofs as well
+    dofs = []
+    # Loop over the cells in the mesh and add the dofs in the respective list
+    for cell in cells(mesh):
+        # Add all the dofs in the sphere
+        dofs.extend(dofmap.cell_dofs(cell.index()))            
+    # Find the unique dofs
+    dofs = list(set(dofs))
+    # Get the actual spatial coordinates as well
+    coordinates = H.tabulate_dof_coordinates()
+    # Loop through the dofs and the coordinates and save the initial conditions
+    for dof, coordinate in zip(dofs, coordinates):
+        # Calculate the z-value
+        z_val = c_x*coordinate[0]+c_y*coordinate[1]
+        # Calculate the corresponding u-value which we save at the correct
+        # position in the mesh
+        u_prev.vector()[dof] = np.interp(z_val, z_vec, u_z)
+# This functions enable us to reproduce our plots using pgfplots in LaTeX
+def plot_LaTeX_2D(t,y,file_str,plot_str,legend_str):
+    # Open a file with the append option
+    # so that we can write to the same
+    # file multiple times
+    f = open(file_str, "a")
+    # Create a temporary string which
+    # is the one that does the plotting.
+    # Here we incorporate the input plot_str
+    # which contains the color, and the markers
+    # of the plot at hand
+    if len(legend_str)==0:
+        temp_str = "\\addplot[\nforget plot,\n" + plot_str+ "\n]\n"
+    else:
+        temp_str = "\\addplot[\n" + plot_str+ "\n]\n"
+    # Add the coordinates
+    temp_str += "coordinates {%\n"
+    # Loop over the input files and add
+    # them to the file
+    for i in range(len(t)):
+        temp_str += "(" + str(t[i]) + "," + str(y[i]) + ")\n"
+    # The plotting is done, let's close the shop    
+    temp_str += "};\n"
+    # Add a legend if one is provided
+    if len(legend_str) > 0:
+        temp_str += "\\addlegendentry{" + legend_str + "}\n"
+    # Finally, we write the huge string
+    # we have created
+    f.write("%s"%(temp_str))
+    # Close the file
+    f.close()
 #=================================================================================
 #=================================================================================
 # Create a mesh of the unit square
 #=================================================================================
 #=================================================================================
 # Define the initial conditions of the original solution
-X_0 = np.array([0.5, 0])
+X_0 = np.array([0.80, 0])
 # Define the travelling wave vector
 z_vec = np.linspace(-1,5,300)
 # Solve the ODE for the travelling wave equation
@@ -50,7 +105,6 @@ X_IC, infodict = integrate.odeint(dX_dt_ICs, X_0, z_vec,full_output=True)
 infodict['message']                     # >>> 'Integration successful.'
 # Extract the solution to our lovely system
 u_z, v_z = X_IC.T
-#print(u_z)
 #=================================================================================
 #=================================================================================
 # Plot the travelling wave solution
@@ -58,7 +112,7 @@ u_z, v_z = X_IC.T
 #=================================================================================
 #Define the first figure
 fig_TW = plt.figure(1) # get current figure
-fig_TW.set_size_inches(20, 8)
+fig_TW.set_size_inches(10, 10)
 #---------------------------------------------------------------------------------
 # The travelling wave solution
 plt.plot(z_vec,u_z)
@@ -72,6 +126,8 @@ plt.xlabel("Travelling wave variable, $z$",fontsize=30)
 plt.ylabel("Population density, $u(z)$",fontsize=30)
 plt.title("Travelling wave solution with density dependent diffusion",fontsize=40,weight='bold')
 #plt.show()
+plot_LaTeX_2D(z_vec,u_z,"../Figures/initial_conditions/Input/u.tex","color=exp_1,line width=2pt,",[])
+
 #=================================================================================
 #=================================================================================
 # Create a mesh of the unit square
@@ -87,7 +143,7 @@ gdim = mesh.geometry().dim() # Get the dimension of the mesh
 #=================================================================================
 #Define the second figure
 fig_FEM_mesh = plt.figure(2) # get current figure
-fig_FEM_mesh.set_size_inches(20, 8)
+fig_FEM_mesh.set_size_inches(10, 10)
 #---------------------------------------------------------------------------------
 # The FEM mesh of the unit square
 plot(mesh)
@@ -102,7 +158,8 @@ plt.ylabel("$y$",fontsize=40)
 plt.title("$" + str(num_nodes) + "\\times" + str(num_nodes) + "$--mesh of the unit square",fontsize=40,weight='bold')
 #---------------------------------------------------------------------------------
 # Save the figure
-#plt.savefig('../Figures/mesh_unit_square.png',dpi = 100)
+plt.savefig('../Figures/mesh_unit_square.png',dpi = 100)
+plt.savefig('../Figures/initial_conditions/mesh_unit_square.eps',dpi = 500)
 # Show the figure
 #plt.show()
 #=================================================================================
@@ -117,41 +174,45 @@ plt.title("$" + str(num_nodes) + "\\times" + str(num_nodes) + "$--mesh of the un
 #element = MixedElement([P1])
 # Collect everything in the function space (name it H for a Hilbert space)
 H = FunctionSpace(mesh, 'P', 2)
-# STEP 2 OUT OF 2: SET THE INITIAL CONDITIONS
-# Create a dofmap
-dofmap = H.dofmap()
-# Classify the dofs as either in the hole or on the rest of the sphere
-dofs = []
-# Loop over the cells in the mesh and add the dofs in the respective list
-for cell in cells(mesh):
-    # Add all the dofs in the sphere
-    dofs.extend(dofmap.cell_dofs(cell.index()))            
-# Find the unique dofs
-dofs = list(set(dofs))
-# Find all the dofs (i.e. the indices of a particular spatial coordinate in the mesh)
-#dofs = dofmap.dofs()
-#dofs = dofmap.cell_dofs()
-# Get the actual coordinates as well
-coordinates = H.tabulate_dof_coordinates()
-# Define a function which we would like to save the initial condition in
+# Define our wave speed variables
+c_x = 1/np.sqrt(2)
+c_y = 1/np.sqrt(2)
+# Define a function in which we will save the initial condition
 u_prev = Function(H) # Previous time step in the FD time stepping scheme
-# Define an elliptic wound
-a = 0.4
-b = 0.5
-# Define a wound threshold
-wound_threshold = 0.2
-# Loop through the dofs and the coordinates and save the initial conditions
-for dof, coordinate in zip(dofs, coordinates):
-    # Calculate the ellipse coordinate
-    wound_coordinate = ((coordinate[0]-0.5)**2/a**2)+((coordinate[1]-0.5)**2/b**2)
-    # If we are outside the ellipse we put it to 1 otherwise 0
-    if wound_coordinate>1:
-        u_prev.vector()[dof] = 1
-    elif wound_coordinate>wound_threshold and wound_coordinate<1.0:
-        u_prev.vector()[dof] = exp(1/((1-wound_threshold)**2))*exp(1/((1-wound_coordinate)**2-(1-wound_threshold)**2))
-    elif wound_coordinate<wound_threshold:
-        u_prev.vector()[dof] = 0
-        
+# # STEP 2 OUT OF 2: SET THE INITIAL CONDITIONS
+# # Create a dofmap
+# dofmap = H.dofmap()
+# # Classify the dofs as either in the hole or on the rest of the sphere
+# dofs = []
+# # Loop over the cells in the mesh and add the dofs in the respective list
+# for cell in cells(mesh):
+#     # Add all the dofs in the sphere
+#     dofs.extend(dofmap.cell_dofs(cell.index()))            
+# # Find the unique dofs
+# dofs = list(set(dofs))
+# # Find all the dofs (i.e. the indices of a particular spatial coordinate in the mesh)
+# # Get the actual coordinates as well
+# coordinates = H.tabulate_dof_coordinates()
+# # Define a function which we would like to save the initial condition in
+# u_prev = Function(H) # Previous time step in the FD time stepping scheme
+# # Define an elliptic wound
+# a = 0.4
+# b = 0.5
+# # Define a wound threshold
+# wound_threshold = 0.2
+# # Loop through the dofs and the coordinates and save the initial conditions
+# for dof, coordinate in zip(dofs, coordinates):
+#     # Calculate the ellipse coordinate
+#     wound_coordinate = ((coordinate[0]-0.5)**2/a**2)+((coordinate[1]-0.5)**2/b**2)
+#     # If we are outside the ellipse we put it to 1 otherwise 0
+#     if wound_coordinate>1:
+#         u_prev.vector()[dof] = 1
+#     elif wound_coordinate>wound_threshold and wound_coordinate<1.0:
+#         u_prev.vector()[dof] = exp(1/((1-wound_threshold)**2))*exp(1/((1-wound_coordinate)**2-(1-wound_threshold)**2))
+#     elif wound_coordinate<wound_threshold:
+#         u_prev.vector()[dof] = 0
+cell_migration_IC(c_x,c_y,z_vec,u_z,H,u_prev)
+
 # Save the initial condition and look at it in ParaView
 vtkfile_u = File("../Output/wound_healing/u.pvd")
 t = 0.0 # The time is zero to begin with
@@ -167,14 +228,17 @@ vtkfile_u << (u_prev, t)
 #=================================================================================
 #Define the second figure
 fig_IC = plt.figure(3) # get current figure
-fig_IC.set_size_inches(20, 8)
-#fig_IC.yaxis.set_ticks_position('left')
+fig_IC.set_size_inches(10, 10)
+ax = plt.gca()
 #---------------------------------------------------------------------------------
 # The FEM mesh of the unit square
-c=plot(u_prev,mode='color')
-cb = plt.colorbar(c)
-cb.ax.tick_params(labelsize=30)
-cb.ax.set_ylabel("$u(x,y,t=0)$", rotation=270,fontsize=40)
+c=plot(u_prev,mode='color',vmin=0,vmax=1)
+# For the colourbar
+#cax = fig_IC.add_axes([ax.get_position().x1+0.01,ax.get_position().y0,0.02,ax.get_position().height])
+# The colourbar in the correct size
+#cb = plt.colorbar(c,ticks=[0, 0.2, 0.8, 1],cax=cax)
+#cb.ax.tick_params(labelsize=30)
+#cb.ax.set_ylabel("$u(x,y,t=0)$", rotation=270,loc='center',fontsize=40)
 # Set a grid and define a legend
 plt.grid()
 # changing the fontsize of yticks
@@ -184,4 +248,6 @@ plt.yticks(fontsize=30)
 plt.xlabel("$x$",fontsize=40)
 plt.ylabel("$y$",fontsize=40)
 plt.title("Initial conditions",fontsize=40,weight='bold')
+plt.savefig('../Figures/initial_condition.png',dpi = 100)
+plt.savefig('../Figures/initial_conditions/initial_condition.png',dpi = 500)
 plt.show()
