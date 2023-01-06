@@ -15,17 +15,69 @@
 #=================================================================================
 # Most good things are contained in FEniCS
 from fenics import *
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy import integrate # For solving ODEs.
 # Make the plotting fancy with LaTeX
 plt.rcParams['text.usetex'] = True
-
+#=================================================================================
+#=================================================================================
+# Functions
+#=================================================================================
+#=================================================================================
+# Function 1: dX_dt_ICs
+# This function defines the ODE system on which we base the initial conditions
+# of the pseudo state v=u'. 
+def dX_dt_ICs(X, t=0,*parameters):   
+    # Define our three terms
+    diffusion = X[1]**2/X[0]
+    taxis = (-2*X[0]+5)*X[1]
+    cell_growth = X[0]*(1-X[0])*(X[0]+3)
+    # Return the dynamics of the exponential model
+    return np.array([ X[1],
+                   -(diffusion+taxis+cell_growth)])
 #=================================================================================
 #=================================================================================
 # Create a mesh of the unit square
 #=================================================================================
 #=================================================================================
-num_nodes = 1000 # Number of nodes
+# Define the initial conditions of the original solution
+X_0 = np.array([0.5, 0])
+# Define the travelling wave vector
+z_vec = np.linspace(-1,5,300)
+# Solve the ODE for the travelling wave equation
+X_IC, infodict = integrate.odeint(dX_dt_ICs, X_0, z_vec,full_output=True)
+infodict['message']                     # >>> 'Integration successful.'
+# Extract the solution to our lovely system
+u_z, v_z = X_IC.T
+#print(u_z)
+#=================================================================================
+#=================================================================================
+# Plot the travelling wave solution
+#=================================================================================
+#=================================================================================
+#Define the first figure
+fig_TW = plt.figure(1) # get current figure
+fig_TW.set_size_inches(20, 8)
+#---------------------------------------------------------------------------------
+# The travelling wave solution
+plt.plot(z_vec,u_z)
+# Set a grid and define a legend
+plt.grid()
+# changing the fontsize of yticks
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+# Set the x-labels and y-labels
+plt.xlabel("Travelling wave variable, $z$",fontsize=30)
+plt.ylabel("Population density, $u(z)$",fontsize=30)
+plt.title("Travelling wave solution with density dependent diffusion",fontsize=40,weight='bold')
+#plt.show()
+#=================================================================================
+#=================================================================================
+# Create a mesh of the unit square
+#=================================================================================
+#=================================================================================
+num_nodes = 25 # Number of nodes
 mesh = UnitSquareMesh(num_nodes, num_nodes, "left") # Generate the mesh
 gdim = mesh.geometry().dim() # Get the dimension of the mesh
 #=================================================================================
@@ -33,27 +85,26 @@ gdim = mesh.geometry().dim() # Get the dimension of the mesh
 # Plot the FEM mesh
 #=================================================================================
 #=================================================================================
-#Define the first figure
-fig_FEM_mesh = plt.gcf() # get current figure
+#Define the second figure
+fig_FEM_mesh = plt.figure(2) # get current figure
 fig_FEM_mesh.set_size_inches(20, 8)
 #---------------------------------------------------------------------------------
-# Subplot 1 of 2: The FEM mesh
-# The original solution
+# The FEM mesh of the unit square
 plot(mesh)
 # Set a grid and define a legend
 plt.grid()
 # changing the fontsize of yticks
-plt.xticks(fontsize=20)
-plt.yticks(fontsize=20)
+plt.xticks(fontsize=30)
+plt.yticks(fontsize=30)
 # Set the x-labels and y-labels
-plt.xlabel("$x$",fontsize=30)
-plt.ylabel("$y$",fontsize=30)
-plt.title("Mesh of the unit square",fontsize=40,weight='bold')
+plt.xlabel("$x$",fontsize=40)
+plt.ylabel("$y$",fontsize=40)
+plt.title("$" + str(num_nodes) + "\\times" + str(num_nodes) + "$--mesh of the unit square",fontsize=40,weight='bold')
 #---------------------------------------------------------------------------------
 # Save the figure
 #plt.savefig('../Figures/mesh_unit_square.png',dpi = 100)
 # Show the figure
-plt.show()
+#plt.show()
 #=================================================================================
 #=================================================================================
 # DEFINE HILBERT SPACE AND SET INITIAL CONDITIONS
@@ -107,3 +158,30 @@ t = 0.0 # The time is zero to begin with
 # WE ALSO SAVE THE VERY LAST ITERATION WHEN ALL THE TIME STEPPING IS DONE.
 u_prev.rename("Population density, $u(\mathbf{x},t)$","u")
 vtkfile_u << (u_prev, t)
+
+
+#=================================================================================
+#=================================================================================
+# Plot the initial conditions
+#=================================================================================
+#=================================================================================
+#Define the second figure
+fig_IC = plt.figure(3) # get current figure
+fig_IC.set_size_inches(20, 8)
+#fig_IC.yaxis.set_ticks_position('left')
+#---------------------------------------------------------------------------------
+# The FEM mesh of the unit square
+c=plot(u_prev,mode='color')
+cb = plt.colorbar(c)
+cb.ax.tick_params(labelsize=30)
+cb.ax.set_ylabel("$u(x,y,t=0)$", rotation=270,fontsize=40)
+# Set a grid and define a legend
+plt.grid()
+# changing the fontsize of yticks
+plt.xticks(fontsize=30)
+plt.yticks(fontsize=30)
+# Set the x-labels and y-labels
+plt.xlabel("$x$",fontsize=40)
+plt.ylabel("$y$",fontsize=40)
+plt.title("Initial conditions",fontsize=40,weight='bold')
+plt.show()
