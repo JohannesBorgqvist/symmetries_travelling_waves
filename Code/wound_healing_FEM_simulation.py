@@ -179,46 +179,25 @@ c_x = 1/np.sqrt(2)
 c_y = 1/np.sqrt(2)
 # Define a function in which we will save the initial condition
 u_prev = Function(H) # Previous time step in the FD time stepping scheme
-# # STEP 2 OUT OF 2: SET THE INITIAL CONDITIONS
-# # Create a dofmap
-# dofmap = H.dofmap()
-# # Classify the dofs as either in the hole or on the rest of the sphere
-# dofs = []
-# # Loop over the cells in the mesh and add the dofs in the respective list
-# for cell in cells(mesh):
-#     # Add all the dofs in the sphere
-#     dofs.extend(dofmap.cell_dofs(cell.index()))            
-# # Find the unique dofs
-# dofs = list(set(dofs))
-# # Find all the dofs (i.e. the indices of a particular spatial coordinate in the mesh)
-# # Get the actual coordinates as well
-# coordinates = H.tabulate_dof_coordinates()
-# # Define a function which we would like to save the initial condition in
-# u_prev = Function(H) # Previous time step in the FD time stepping scheme
-# # Define an elliptic wound
-# a = 0.4
-# b = 0.5
-# # Define a wound threshold
-# wound_threshold = 0.2
-# # Loop through the dofs and the coordinates and save the initial conditions
-# for dof, coordinate in zip(dofs, coordinates):
-#     # Calculate the ellipse coordinate
-#     wound_coordinate = ((coordinate[0]-0.5)**2/a**2)+((coordinate[1]-0.5)**2/b**2)
-#     # If we are outside the ellipse we put it to 1 otherwise 0
-#     if wound_coordinate>1:
-#         u_prev.vector()[dof] = 1
-#     elif wound_coordinate>wound_threshold and wound_coordinate<1.0:
-#         u_prev.vector()[dof] = exp(1/((1-wound_threshold)**2))*exp(1/((1-wound_coordinate)**2-(1-wound_threshold)**2))
-#     elif wound_coordinate<wound_threshold:
-#         u_prev.vector()[dof] = 0
+# Calculate the initial conditions
 cell_migration_IC(c_x,c_y,z_vec,u_z,H,u_prev)
-
 # Save the initial condition and look at it in ParaView
 vtkfile_u = File("../Output/wound_healing/u.pvd")
 t = 0.0 # The time is zero to begin with
 # WE ALSO SAVE THE VERY LAST ITERATION WHEN ALL THE TIME STEPPING IS DONE.
 u_prev.rename("Population density, $u(\mathbf{x},t)$","u")
 vtkfile_u << (u_prev, t)
+#=================================================================================
+#=================================================================================
+# Setup the variational formulation
+#=================================================================================
+#=================================================================================
+# Define our analytical solution
+u = Function(H)
+# Define our lovely test function
+v = TestFunction(H)
+# Define our function that we want to solve for
+F = dot(grad(u), grad(v))*dx + (grad(u)[0]+grad(u)[1])*v*dx
 
 
 #=================================================================================
