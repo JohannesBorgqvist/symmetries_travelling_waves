@@ -175,7 +175,7 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
         # Update old solution
         u_prev.assign(u)
         # We also want to save some nice figures here
-        if ((t_prev < T1) and (t > 0.T1)) or ((t_prev < T2) and (t > T2)) or ((t_prev < T3) and (t > T3)):
+        if ((t_prev < T1) and (t > T1)) or ((t_prev < T2) and (t > T2)) or ((t_prev < T3) and (t > T3)):
             #Define the second figure
             fig_temp = plt.figure() # get current figure
             fig_temp.set_size_inches(10, 10)
