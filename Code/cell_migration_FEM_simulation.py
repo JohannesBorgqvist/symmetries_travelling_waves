@@ -358,7 +358,7 @@ plt.show()
 #=================================================================================
 #=================================================================================
 # Re-define the mesh with a higher node density
-num_nodes = 100 # Number of nodes
+num_nodes = 32 # Number of nodes
 mesh = UnitSquareMesh(num_nodes, num_nodes, "left") # Generate the mesh
 # First solution to PDE problem
 solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z)
