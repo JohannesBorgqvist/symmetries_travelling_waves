@@ -60,6 +60,159 @@ def cell_migration_IC(c_x,c_y,z_vec,u_z,H,u_prev):
         # Calculate the corresponding u-value which we save at the correct
         # position in the mesh
         u_prev.vector()[dof] = np.interp(z_val, z_vec, u_z)
+# Function 3: solve_PDE_cell_migration
+# This function solves the continuum PDE modelling cell migration
+def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z):
+    #---------------------------------------------------------------------------------
+    # Step 1 out of 4: Setup function spaces
+    #---------------------------------------------------------------------------------
+    # Collect everything in the function space (name it H for a Hilbert space)
+    H = FunctionSpace(mesh, 'P', 2)
+    # Define our functions needed and testfunctions in the FD-FEM time stepping scheme    
+    u_prev = Function(H) # Previous time step in the FD time stepping scheme
+    # Define our analytical solution
+    u = Function(H)
+    # Define our lovely test function
+    v = TestFunction(H)    
+    #---------------------------------------------------------------------------------
+    # Step 2 out of 4: Setup initial conditions
+    #---------------------------------------------------------------------------------
+    # Calculate the initial conditions
+    cell_migration_IC(c_x,c_y,z_vec,u_z,H,u_prev)
+    # Save the initial condition and look at it in ParaView
+    vtkfile_u = File("../Output/cell_migration_" + "c_x_" + str(round(c_x,3)).replace(".","p") + "_c_y_" + str(round(c_y,3)).replace(".","p") + "/u.pvd")
+    t = 0.0 # The time is zero to begin with
+    # WE ALSO SAVE THE VERY LAST ITERATION WHEN ALL THE TIME STEPPING IS DONE.
+    u_prev.rename("Population density, $u(\mathbf{x},t)$","u")
+    vtkfile_u << (u_prev, t)
+    # We want to plot the initial conditions as well
+    #---------------------------------------------------------------------------------
+    #Define the second figure
+    fig_temp = plt.figure() # get current figure
+    fig_temp.set_size_inches(10, 10)
+    ax = plt.gca()
+    # The FEM mesh of the unit square
+    c=plot(u_prev,mode='color',vmin=0,vmax=1)
+    # Set a grid and define a legend
+    plt.grid()
+    # changing the fontsize of yticks
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
+    # Set the x-labels and y-labels
+    plt.xlabel("$x$",fontsize=40)
+    plt.ylabel("$y$",fontsize=40)
+    plt.title("$t=" + str(round(t,2)) + "$",fontsize=40,weight='bold')
+    plt.savefig("../Figures/PDE_simulations/Input/cx_" + str(round(c_x,3)).replace(".","p") + "_" + str(round(c_y,3)).replace(".","p") + "_" + str(round(t,2)).replace(".","p") + ".png",dpi = 500)
+    #---------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------------
+    # Step 3 out of 4: Setup numerical parameters
+    #---------------------------------------------------------------------------------
+    # Define numerical parameters for the FD-scheme in time
+    delta_x = 1/num_nodes # The step length in the spatial dimension
+    dt = ((delta_x**2)/(8)) # Time step in finite difference
+    # Re-define this as a constant for the FEM solver    
+    k = Constant(dt) # For the fem solver as well
+    # Define an iterator for the time stepping keeping track of
+    # how many iterations that has passed
+    t_it = 0
+    # Also, define the current time outside the loop, so that we can save
+    # the final concentration profile after the looping is done.
+    t = 0
+    # Previous time step
+    t_prev = 0
+    # Determine the end time for our simulations
+    T = 0.5
+    # Save the concentration profile when the time has increased with a value 0.5
+    save_iteration_vtk_original = T/60
+    save_iteration_vtk = save_iteration_vtk_original
+    #--------------------------------------------------------------------------------
+    # Step 4 out of 4: FD time stepping, a simple Euler forward, in time FEM in space
+    #--------------------------------------------------------------------------------
+    # Surpress annoying printing from the FEM solver
+    set_log_active(False)
+    # Start the time stepping
+    while t < T:
+        #--------------------------------------------------------------------------------
+        # Update the time stepping details
+        #--------------------------------------------------------------------------------    
+        # Save the previous time step
+        t_prev = t
+        # Update current time and iteration number 
+        t_it += 1
+        t += dt
+        #--------------------------------------------------------------------------------
+        # FEM solution for current time step
+        #--------------------------------------------------------------------------------
+        # Define the individual terms in the VF
+        Accumulation = (u-u_prev)*v*dx
+        Diffusion = u*dot(grad(u), grad(v))*dx
+        Taxis = ((-(2*u**2)+(5*u)-1)/(c_x+c_y))*(grad(u)[0]+grad(u)[1])*v*dx
+        Cell_growth = (u**2)*(1-u)*(u+3)*v*dx
+        # Define our function that we want to solve for
+        F = Accumulation + k*(Diffusion-Taxis-Cell_growth)
+        # Solve for u
+        solve(F==0,u)
+        #--------------------------------------------------------------------------------
+        # Save and update solution
+        #--------------------------------------------------------------------------------    
+        # Save and check the solution (every whatever iteration)
+        if  (t_prev < save_iteration_vtk) and (t > save_iteration_vtk):
+            # Prompt to the user
+            print("\t\tIteration %d, t\t=\t%0.3f out of %0.3f"%(t_it,t,T))    
+            # Increase the iterations
+            save_iteration_vtk += save_iteration_vtk_original
+            # Re--name the title on the colour bar
+            u.rename("Population density, $u(\mathbf{x},t)$","u")
+            # Save the components in the data files
+            vtkfile_u << (u, t)
+        # Update old solution
+        u_prev.assign(u)
+        # We also want to save some nice figures here
+        if ((t_prev < 0.20) and (t > 0.20)) or ((t_prev < 0.30) and (t > 0.30)) or ((t_prev < 0.40) and (t > 0.40)):
+            #Define the second figure
+            fig_temp = plt.figure() # get current figure
+            fig_temp.set_size_inches(10, 10)
+            ax = plt.gca()
+            #---------------------------------------------------------------------------------
+            # The FEM mesh of the unit square
+            c=plot(u,mode='color',vmin=0,vmax=1)
+            # Set a grid and define a legend
+            plt.grid()
+            # changing the fontsize of yticks
+            plt.xticks(fontsize=30)
+            plt.yticks(fontsize=30)
+            # Set the x-labels and y-labels
+            plt.xlabel("$x$",fontsize=40)
+            plt.ylabel("$y$",fontsize=40)
+            plt.title("$t=" + str(round(t,2)) + "$",fontsize=40,weight='bold')
+            plt.savefig("../Figures/PDE_simulations/Input/cx_" + str(round(c_x,3)).replace(".","p") + "_" + str(round(c_y,3)).replace(".","p") + "_" + str(round(t,2)).replace(".","p") + ".png",dpi = 500)          
+    #--------------------------------------------------------------------------------
+    # Save solution when t=T
+    #--------------------------------------------------------------------------------
+    # Re--name the title on the colour bar
+    u.rename("Population density, $u(\mathbf{x},t)$","u")
+    # Save the components in the data files
+    vtkfile_u << (u, t)
+    #---------------------------------------------------------------------------------
+    #Define the second figure
+    fig_temp = plt.figure() # get current figure
+    fig_temp.set_size_inches(10, 10)
+    ax = plt.gca()
+    # The FEM mesh of the unit square
+    c=plot(u,mode='color',vmin=0,vmax=1)
+    # Set a grid and define a legend
+    plt.grid()
+    # changing the fontsize of yticks
+    plt.xticks(fontsize=30)
+    plt.yticks(fontsize=30)
+    # Set the x-labels and y-labels
+    plt.xlabel("$x$",fontsize=40)
+    plt.ylabel("$y$",fontsize=40)
+    plt.title("$t=" + str(round(t,2)) + "$",fontsize=40,weight='bold')
+    plt.savefig("../Figures/PDE_simulations/Input/cx_" + str(round(c_x,3)).replace(".","p") + "_" + str(round(c_y,3)).replace(".","p") + "_" + str(round(t,2)).replace(".","p") + ".png",dpi = 500)
+    #---------------------------------------------------------------------------------    
+    # Prompt to the user
+    print("\n\tSimulations are finished!\n\n")        
 # This functions enable us to reproduce our plots using pgfplots in LaTeX
 def plot_LaTeX_2D(t,y,file_str,plot_str,legend_str):
     # Open a file with the append option
@@ -125,7 +278,7 @@ plt.yticks(fontsize=20)
 plt.xlabel("Travelling wave variable, $z$",fontsize=30)
 plt.ylabel("Population density, $u(z)$",fontsize=30)
 plt.title("Travelling wave solution with density dependent diffusion",fontsize=40,weight='bold')
-#plt.show()
+plt.show()
 plot_LaTeX_2D(z_vec,u_z,"../Figures/initial_conditions/Input/u.tex","color=exp_1,line width=2pt,",[])
 
 #=================================================================================
@@ -135,7 +288,6 @@ plot_LaTeX_2D(z_vec,u_z,"../Figures/initial_conditions/Input/u.tex","color=exp_1
 #=================================================================================
 num_nodes = 25 # Number of nodes
 mesh = UnitSquareMesh(num_nodes, num_nodes, "left") # Generate the mesh
-gdim = mesh.geometry().dim() # Get the dimension of the mesh
 #=================================================================================
 #=================================================================================
 # Plot the FEM mesh
@@ -164,14 +316,9 @@ plt.savefig('../Figures/initial_conditions/mesh_unit_square.eps',dpi = 500)
 #plt.show()
 #=================================================================================
 #=================================================================================
-# DEFINE HILBERT SPACE AND SET INITIAL CONDITIONS
+# Illustrate the initial conditions for a certain choice of wave speeds 
 #=================================================================================
 #=================================================================================
-# STEP 1 OUT OF 2: DEFINE THE FUNCTION SPACE
-# Define the basis finite elements and their order. We pick linear basis functions. 
-#P1 = FiniteElement("P", mesh.ufl_cell(), 1)
-# Define a mixed element since we have a coupled system of two PDEs
-#element = MixedElement([P1])
 # Collect everything in the function space (name it H for a Hilbert space)
 H = FunctionSpace(mesh, 'P', 2)
 # Define our wave speed variables
@@ -181,25 +328,6 @@ c_y = 1/np.sqrt(2)
 u_prev = Function(H) # Previous time step in the FD time stepping scheme
 # Calculate the initial conditions
 cell_migration_IC(c_x,c_y,z_vec,u_z,H,u_prev)
-# Save the initial condition and look at it in ParaView
-vtkfile_u = File("../Output/wound_healing/u.pvd")
-t = 0.0 # The time is zero to begin with
-# WE ALSO SAVE THE VERY LAST ITERATION WHEN ALL THE TIME STEPPING IS DONE.
-u_prev.rename("Population density, $u(\mathbf{x},t)$","u")
-vtkfile_u << (u_prev, t)
-#=================================================================================
-#=================================================================================
-# Setup the variational formulation
-#=================================================================================
-#=================================================================================
-# Define our analytical solution
-u = Function(H)
-# Define our lovely test function
-v = TestFunction(H)
-# Define our function that we want to solve for
-F = dot(grad(u), grad(v))*dx + (grad(u)[0]+grad(u)[1])*v*dx
-
-
 #=================================================================================
 #=================================================================================
 # Plot the initial conditions
@@ -212,12 +340,6 @@ ax = plt.gca()
 #---------------------------------------------------------------------------------
 # The FEM mesh of the unit square
 c=plot(u_prev,mode='color',vmin=0,vmax=1)
-# For the colourbar
-#cax = fig_IC.add_axes([ax.get_position().x1+0.01,ax.get_position().y0,0.02,ax.get_position().height])
-# The colourbar in the correct size
-#cb = plt.colorbar(c,ticks=[0, 0.2, 0.8, 1],cax=cax)
-#cb.ax.tick_params(labelsize=30)
-#cb.ax.set_ylabel("$u(x,y,t=0)$", rotation=270,loc='center',fontsize=40)
 # Set a grid and define a legend
 plt.grid()
 # changing the fontsize of yticks
@@ -230,3 +352,18 @@ plt.title("Initial conditions",fontsize=40,weight='bold')
 plt.savefig('../Figures/initial_condition.png',dpi = 100)
 plt.savefig('../Figures/initial_conditions/initial_condition.png',dpi = 500)
 plt.show()
+#=================================================================================
+#=================================================================================
+# SOLVE THE PDE FOR THE GIVEN PARAMETERS
+#=================================================================================
+#=================================================================================
+# Re-define the mesh with a higher node density
+num_nodes = 100 # Number of nodes
+mesh = UnitSquareMesh(num_nodes, num_nodes, "left") # Generate the mesh
+# First solution to PDE problem
+solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z)
+# Re-define our wave speeds
+c_x = -1/2
+c_y = np.sqrt(3)/2
+# Solve the system of PDEs again with the new wave speed parameters
+solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z)
