@@ -29,3 +29,6 @@
 /Figures/travelling_waves/
 # Also, we do not include vtu files as they are large
 *.vtu
+*.tex
+*.pdf
+*.eps
