@@ -346,7 +346,7 @@ fig_IC.set_size_inches(10, 10)
 ax = plt.gca()
 #---------------------------------------------------------------------------------
 # The FEM mesh of the unit square
-c=plot(u_prev,mode='color',vmin=0,vmax=1)
+c=plot(u_prev,mode='color',vmin=0.32,vmax=0.65)
 # Set a grid and define a legend
 plt.grid()
 # changing the fontsize of yticks
