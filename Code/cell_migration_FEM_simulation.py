@@ -62,7 +62,16 @@ def cell_migration_IC(c_x,c_y,z_vec,u_z,H,u_prev):
         u_prev.vector()[dof] = np.interp(z_val, z_vec, u_z)
 # Function 3: solve_PDE_cell_migration
 # This function solves the continuum PDE modelling cell migration
-def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z):
+def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
+    #---------------------------------------------------------------------------------
+    # Step 0 out of 4: Extract parameters
+    #---------------------------------------------------------------------------------
+    T = parameters[0] # End time for simulation
+    v_min = parameters[1] # Lower limit for colour bar
+    v_max = parameters[2] # Upper limit for colour bar
+    T1 = parameters[3] # First time point we save the figure of
+    T2 = parameters[4] # Second time point we save the figure of
+    T3 = parameters[5] # Third time point we save the figure of
     #---------------------------------------------------------------------------------
     # Step 1 out of 4: Setup function spaces
     #---------------------------------------------------------------------------------
@@ -92,7 +101,7 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z):
     fig_temp.set_size_inches(10, 10)
     ax = plt.gca()
     # The FEM mesh of the unit square
-    c=plot(u_prev,mode='color',vmin=0,vmax=1)
+    c=plot(u_prev,mode='color',vmin=v_min,vmax=v_max)
     # Set a grid and define a legend
     plt.grid()
     # changing the fontsize of yticks
@@ -120,8 +129,6 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z):
     t = 0
     # Previous time step
     t_prev = 0
-    # Determine the end time for our simulations
-    T = 0.5
     # Save the concentration profile when the time has increased with a value 0.5
     save_iteration_vtk_original = T/60
     save_iteration_vtk = save_iteration_vtk_original
@@ -168,14 +175,14 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z):
         # Update old solution
         u_prev.assign(u)
         # We also want to save some nice figures here
-        if ((t_prev < 0.20) and (t > 0.20)) or ((t_prev < 0.30) and (t > 0.30)) or ((t_prev < 0.40) and (t > 0.40)):
+        if ((t_prev < T1) and (t > 0.T1)) or ((t_prev < T2) and (t > T2)) or ((t_prev < T3) and (t > T3)):
             #Define the second figure
             fig_temp = plt.figure() # get current figure
             fig_temp.set_size_inches(10, 10)
             ax = plt.gca()
             #---------------------------------------------------------------------------------
             # The FEM mesh of the unit square
-            c=plot(u,mode='color',vmin=0,vmax=1)
+            c=plot(u,mode='color',vmin=v_min,vmax=v_max)
             # Set a grid and define a legend
             plt.grid()
             # changing the fontsize of yticks
@@ -199,7 +206,7 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z):
     fig_temp.set_size_inches(10, 10)
     ax = plt.gca()
     # The FEM mesh of the unit square
-    c=plot(u,mode='color',vmin=0,vmax=1)
+    c=plot(u,mode='color',vmin=v_min,vmax=v_max)
     # Set a grid and define a legend
     plt.grid()
     # changing the fontsize of yticks
@@ -360,10 +367,14 @@ plt.show()
 # Re-define the mesh with a higher node density
 num_nodes = 32 # Number of nodes
 mesh = UnitSquareMesh(num_nodes, num_nodes, "left") # Generate the mesh
+# Define some hand picked parameters for the visualisation
+parameters = [0.20, 0.32, 0.65, 0.05, 0.10, 0.15]
 # First solution to PDE problem
-solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z)
+solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters)
 # Re-define our wave speeds
 c_x = -1/2
 c_y = np.sqrt(3)/2
+# Define some hand picked parameters for the visualisation
+parameters = [0.10, 0.44, 0.75, 0.025, 0.05, 0.075]
 # Solve the system of PDEs again with the new wave speed parameters
-solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z)
+solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters)
