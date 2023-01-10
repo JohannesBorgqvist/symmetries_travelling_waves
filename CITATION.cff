@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Borgqvist
+    given-names: Johannes Gabriel
+    orcid:  https://orcid.org/0000-0001-6441-2942
+title: "Github repositry for symmetry based model construction of travelling wave models of collective cell migration in two spatial dimensions."
+version: 1.0
+doi: https://github.com/JohannesBorgqvist/symmetries_travelling_waves
+date-released: 2023-01-10
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Borgqvist, Lundholm"
+    given-names: "Johannes G., Carl"
+    orcid: "https://orcid.org/0000-0001-6441-2942"
+  doi: "https://github.com/JohannesBorgqvist/symmetries_travelling_waves"
+  journal: "https://github.com/JohannesBorgqvist/symmetries_travelling_waves"
+  month: 1
+  start: 1 # First page number
+  end: 10 # Last page number
+  title: "Github repositry for symmetry based model construction of travelling wave models of collective cell migration in two spatial dimensions."
+  issue: 1
+  volume: 1
+  year: 2023
