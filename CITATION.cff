@@ -11,8 +11,8 @@ date-released: 2023-01-10
 preferred-citation:
   type: article
   authors:
-  - family-names: "Borgqvist, Lundholm"
-    given-names: "Johannes G., Carl"
+  - family-names: "Borgqvist"
+    given-names: "Johannes G."
     orcid: "https://orcid.org/0000-0001-6441-2942"
   doi: "https://github.com/JohannesBorgqvist/symmetries_travelling_waves"
   journal: "https://github.com/JohannesBorgqvist/symmetries_travelling_waves"
