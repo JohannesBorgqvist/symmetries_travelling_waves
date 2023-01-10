@@ -16,7 +16,7 @@ To generate the figure below, just run the script listed in the first bullet poi
 
 
 ## Simulating collective cell migration on the unit square
-To generate a mesh, initial condition and lastly to solve a reaction-convection-diffusion PDE in two spatial dimensions of collective cell migration, run the script listed in the second bullet point above. This script solves the PDE using [FEniCS](https://fenicsproject.org/). The easiest way to install FEniCS is by using [conda](https://docs.conda.io/en/latest/) and then creating a conda environment using the provided yml-file called *fenicsproject.yml*. To install this environment, type
+To generate a mesh, initial condition and lastly to solve a reaction-convection-diffusion PDE in two spatial dimensions of collective cell migration, run the script listed in the second bullet point above. This script solves the PDE using [FEniCS](https://fenicsproject.org/). The easiest way to install FEniCS is by creating a [conda](https://docs.conda.io/en/latest/) environment using the provided yml-file called *fenicsproject.yml*. To install this environment (after conda has been installed), type
 
 *conda env create -f fenicsproject.yml*<br>
 
