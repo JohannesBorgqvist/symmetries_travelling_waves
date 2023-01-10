@@ -9,3 +9,8 @@ We illustrate the symmetries of travelling wave solutions to RD-models of cell g
 
 ![FEM mesh of the unit square](./Figures/mesh_unit_square.png)
 
+
+
+
+
+
