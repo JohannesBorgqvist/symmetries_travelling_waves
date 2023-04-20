@@ -72,6 +72,14 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
     T1 = parameters[3] # First time point we save the figure of
     T2 = parameters[4] # Second time point we save the figure of
     T3 = parameters[5] # Third time point we save the figure of
+    # Define the wave speed in time
+    c_t = 1
+    # Find the medium value of the wave
+    wave_front = 0.65*max(u_z)
+    # Find the z-coordinate of the wave front
+    z_front = np.interp(wave_front, np.flip(u_z), np.flip(z_vec))
+    # We want to map this front onto a range of x and y values
+    x_front = np.linspace(0,1)    
     #---------------------------------------------------------------------------------
     # Step 1 out of 4: Setup function spaces
     #---------------------------------------------------------------------------------
@@ -94,6 +102,8 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
     # WE ALSO SAVE THE VERY LAST ITERATION WHEN ALL THE TIME STEPPING IS DONE.
     u_prev.rename("Population density, $u(\mathbf{x},t)$","u")
     vtkfile_u << (u_prev, t)
+    # Calculate where the wave front is located
+    y_front = np.array([((z_front-c_x*x+c_t*t)/(c_y)) for x in x_front])        
     # We want to plot the initial conditions as well
     #---------------------------------------------------------------------------------
     #Define the second figure
@@ -102,6 +112,11 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
     ax = plt.gca()
     # The FEM mesh of the unit square
     c=plot(u_prev,mode='color',vmin=v_min,vmax=v_max)
+    # Plot the wave front as well
+    #plt.plot(x_front,y_front,color=(1,1,1),linewidth=4)            
+    # Set the limits to the unit square
+    plt.xlim([0,1])
+    plt.ylim([0,1])    
     # Set a grid and define a legend
     plt.grid()
     # changing the fontsize of yticks
@@ -111,7 +126,7 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
     plt.xlabel("$x$",fontsize=40)
     plt.ylabel("$y$",fontsize=40)
     plt.title("$t=" + str(round(t,2)) + "$",fontsize=40,weight='bold')
-    plt.savefig("../Figures/PDE_simulations/Input/cx_" + str(round(c_x,3)).replace(".","p") + "_" + str(round(c_y,3)).replace(".","p") + "_" + str(round(t,2)).replace(".","p") + ".png",dpi = 500)
+    plt.savefig("../Figures/PDE_simulations/Input/cx_" + str(round(c_x,3)).replace(".","p") + "_" + str(round(c_y,3)).replace(".","p") + "_" + str(round(t,2)).replace(".","p") + ".png",dpi = 200)
     #---------------------------------------------------------------------------------
     #---------------------------------------------------------------------------------
     # Step 3 out of 4: Setup numerical parameters
@@ -176,6 +191,8 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
         u_prev.assign(u)
         # We also want to save some nice figures here
         if ((t_prev < T1) and (t > T1)) or ((t_prev < T2) and (t > T2)) or ((t_prev < T3) and (t > T3)):
+            # Calculate where the wave front is located
+            y_front = np.array([((z_front-c_x*x+c_t*t)/(c_y)) for x in x_front])
             #Define the second figure
             fig_temp = plt.figure() # get current figure
             fig_temp.set_size_inches(10, 10)
@@ -183,6 +200,11 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
             #---------------------------------------------------------------------------------
             # The FEM mesh of the unit square
             c=plot(u,mode='color',vmin=v_min,vmax=v_max)
+            # Plot the wave front as well
+            #plt.plot(x_front,y_front,color=(1,1,1),linewidth=4)            
+            # Set the limits to the unit square
+            plt.xlim([0,1])
+            plt.ylim([0,1])
             # Set a grid and define a legend
             plt.grid()
             # changing the fontsize of yticks
@@ -192,7 +214,7 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
             plt.xlabel("$x$",fontsize=40)
             plt.ylabel("$y$",fontsize=40)
             plt.title("$t=" + str(round(t,2)) + "$",fontsize=40,weight='bold')
-            plt.savefig("../Figures/PDE_simulations/Input/cx_" + str(round(c_x,3)).replace(".","p") + "_" + str(round(c_y,3)).replace(".","p") + "_" + str(round(t,2)).replace(".","p") + ".png",dpi = 500)          
+            plt.savefig("../Figures/PDE_simulations/Input/cx_" + str(round(c_x,3)).replace(".","p") + "_" + str(round(c_y,3)).replace(".","p") + "_" + str(round(t,2)).replace(".","p") + ".png",dpi = 200)          
     #--------------------------------------------------------------------------------
     # Save solution when t=T
     #--------------------------------------------------------------------------------
@@ -200,6 +222,8 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
     u.rename("Population density, $u(\mathbf{x},t)$","u")
     # Save the components in the data files
     vtkfile_u << (u, t)
+    # Calculate where the wave front is located
+    y_front = np.array([((z_front-c_x*x+c_t*t)/(c_y)) for x in x_front])    
     #---------------------------------------------------------------------------------
     #Define the second figure
     fig_temp = plt.figure() # get current figure
@@ -207,6 +231,11 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
     ax = plt.gca()
     # The FEM mesh of the unit square
     c=plot(u,mode='color',vmin=v_min,vmax=v_max)
+    # Plot the wave front as well
+    #plt.plot(x_front,y_front,color=(1,1,1),linewidth=4)            
+    # Set the limits to the unit square
+    plt.xlim([0,1])
+    plt.ylim([0,1])    
     # Set a grid and define a legend
     plt.grid()
     # changing the fontsize of yticks
@@ -216,7 +245,7 @@ def solve_PDE_cell_migration(num_nodes,mesh,c_x,c_y,z_vec,u_z,parameters):
     plt.xlabel("$x$",fontsize=40)
     plt.ylabel("$y$",fontsize=40)
     plt.title("$t=" + str(round(t,2)) + "$",fontsize=40,weight='bold')
-    plt.savefig("../Figures/PDE_simulations/Input/cx_" + str(round(c_x,3)).replace(".","p") + "_" + str(round(c_y,3)).replace(".","p") + "_" + str(round(t,2)).replace(".","p") + ".png",dpi = 500)
+    plt.savefig("../Figures/PDE_simulations/Input/cx_" + str(round(c_x,3)).replace(".","p") + "_" + str(round(c_y,3)).replace(".","p") + "_" + str(round(t,2)).replace(".","p") + ".png",dpi = 200)
     #---------------------------------------------------------------------------------    
     # Prompt to the user
     print("\n\tSimulations are finished!\n\n")        
@@ -365,7 +394,7 @@ plt.show()
 #=================================================================================
 #=================================================================================
 # Re-define the mesh with a higher node density
-num_nodes = 32 # Number of nodes
+num_nodes = 100 # Number of nodes
 mesh = UnitSquareMesh(num_nodes, num_nodes, "left") # Generate the mesh
 # Define some hand picked parameters for the visualisation
 parameters = [0.20, 0.32, 0.65, 0.05, 0.10, 0.15]
